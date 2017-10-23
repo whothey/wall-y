@@ -9,6 +9,9 @@ ROBOT_LIB_SRCS=Window.cpp
 
 all: cgrobot main
 
+exec: main
+	../bin/main
+
 main: main.cpp cgrobot
 	$(CXX) $< $(BIN)/Robot.o $(BIN)/Camera.o $(BIN)/Window.o $(BIN)/Maze.o -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
 
