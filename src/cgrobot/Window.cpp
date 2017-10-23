@@ -35,6 +35,7 @@ void Window::start()
     glutDisplayFunc(m_DisplayFunc);
     glutReshapeFunc(m_ReshapeFunc);
     glutKeyboardFunc(m_KeyboardFunc);
+    glutSpecialFunc(m_SpecialFunc);
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);

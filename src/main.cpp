@@ -98,11 +98,6 @@ void keyboard(unsigned char key, int x, int y)
 
         case 'a':
         case 'A':
-            if (control == Robot)
-                robot.turn(45);
-            else
-                current_camera->turn(5);
-            break;
 
         case 's':
         case 'S':
@@ -117,7 +112,7 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot)
                 robot.turn(-45);
             else
-                current_camera->turn(-5);
+                current_camera->turnV(-5);
             break;
 
         default: break;
@@ -128,6 +123,31 @@ void special_input(int key, int x, int y)
 {
     switch (key) {
     case GLUT_KEY_UP:
+        if (control == Robot)
+            robot.turn(45);
+        else
+            current_camera->turnH(-5);
+        break;
+
+    case GLUT_KEY_DOWN:
+        if (control == Robot)
+            robot.turn(45);
+        else
+            current_camera->turnH(5);
+        break;
+
+    case GLUT_KEY_LEFT:
+        if (control == Robot)
+            robot.turn(45);
+        else
+            current_camera->turnV(-5);
+        break;
+
+    case GLUT_KEY_RIGHT:
+        if (control == Robot)
+            robot.turn(45);
+        else
+            current_camera->turnV(5);
         break;
 
     default:
