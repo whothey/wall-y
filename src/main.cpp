@@ -53,8 +53,8 @@ void draw(void)
     // Limpa a janela de visualização com a cor de fundo especificada
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    maze.draw();
     robot.draw();
+    maze.draw();
 
     // Executa os comandos OpenGL
     glFlush();
@@ -110,7 +110,7 @@ void keyboard(unsigned char key, int x, int y)
         case 'd':
         case 'D':
             if (control == Robot)
-                robot.turn(-45);
+                robot.turnZ(-45);
             else
                 current_camera->turnV(-5);
             break;
@@ -124,28 +124,28 @@ void special_input(int key, int x, int y)
     switch (key) {
     case GLUT_KEY_UP:
         if (control == Robot)
-            robot.turn(45);
+            robot.turnZ(45);
         else
             current_camera->turnH(-5);
         break;
 
     case GLUT_KEY_DOWN:
         if (control == Robot)
-            robot.turn(45);
+            robot.turnZ(45);
         else
             current_camera->turnH(5);
         break;
 
     case GLUT_KEY_LEFT:
         if (control == Robot)
-            robot.turn(45);
+            robot.turnZ(45);
         else
             current_camera->turnV(-5);
         break;
 
     case GLUT_KEY_RIGHT:
         if (control == Robot)
-            robot.turn(45);
+            robot.turnZ(45);
         else
             current_camera->turnV(5);
         break;

@@ -3,7 +3,6 @@
 using namespace cgrobot;
 
 Robot::Robot(GLdouble x, GLdouble y, GLdouble z)
-     : m_posX(x), m_posY(y), m_posZ(z), m_rotation(0)
 {
     quadric = gluNewQuadric();
     
@@ -17,27 +16,11 @@ Robot::~Robot()
     gluDeleteQuadric(quadric);
 }
 
-void Robot::move(GLdouble x, GLdouble y, GLdouble z)
-{
-    m_posX += x;
-    m_posY += y;
-    m_posZ += z;
-}
-
-void Robot::turn(GLdouble dg)
-{
-    m_rotation += dg;
-}
-
 void Robot::draw()
 {
+    WorldObject::draw();
+
     glPushMatrix();
-
-    // Turn Robot to right position
-    glRotatef(m_rotation, 0, 0, 1);
-
-    // Move robot to current position
-    glTranslatef(m_posX, m_posY, m_posZ);
 
     // Draw
     // Golden - Head Top

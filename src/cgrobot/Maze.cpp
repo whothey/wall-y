@@ -7,7 +7,6 @@ using namespace cgrobot;
 Maze::Maze(GLint *adjMatrix, size_t nrows, size_t ncols)
     : m_matrix(adjMatrix), m_matrixRows(nrows), m_matrixCols(ncols)
     , m_cubeHeight(10), m_cubeAspect(10)
-    , startX(0), startY(0)
 {
     wallQuadric = gluNewQuadric();
     gluQuadricDrawStyle(wallQuadric, GLU_FILL);
@@ -47,6 +46,8 @@ void Maze::draw()
     }
 
     glPopMatrix();
+
+    WorldObject::draw();
 }
 
 void Maze::update()
