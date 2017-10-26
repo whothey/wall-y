@@ -180,4 +180,19 @@ void Maze::draw()
     WorldObject::draw();
 }
 
+GLdouble Maze::indexX(size_t i, size_t j)
+{
+    return i * m_cubeAspect;
+}
+
+GLdouble Maze::indexY(size_t i, size_t j)
+{
+    return posY;
+}
+
+GLdouble Maze::indexZ(size_t i, size_t j)
+{
+    return j * m_cubeAspect;
+}
+
 void Maze::update() { }
