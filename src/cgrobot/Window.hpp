@@ -1,3 +1,6 @@
+#ifndef _CGR_WINDOW_H
+ #define _CGR_WINDOW_H
+
 #include <GL/glut.h>
 #include "Camera.hpp"
 #include "WorldObject.hpp"
@@ -33,3 +36,5 @@ public:
     //virtual void reshape();
 };
 }
+
+#endif // _CGR_WINDOW_H

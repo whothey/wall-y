@@ -1,5 +1,4 @@
 #include "WorldObject.hpp"
-#include <iostream>
 
 using namespace cgrobot;
 
@@ -11,6 +10,7 @@ WorldObject::WorldObject()
 void WorldObject::draw()
 {
     glTranslatef(posX, posY, posZ);
+
     glRotatef(rotX, 1, 0, 0);
     glRotatef(rotY, 0, 1, 0);
     glRotatef(rotZ, 0, 0, 1);
@@ -18,7 +18,11 @@ void WorldObject::draw()
 
 void WorldObject::move(GLdouble x, GLdouble y, GLdouble z)
 {
-    posX += x; posY += y; posZ += z;
+    GLdouble radRotY = rotY * M_PI / 180.0f;
+
+    posX += x * cos(radRotY) + z * sin(radRotY);
+    posY += y;
+    posZ += -x * sin(radRotY) + z * cos(radRotY);
 }
 
 void WorldObject::turn(GLdouble x, GLdouble y, GLdouble z)

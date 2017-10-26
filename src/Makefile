@@ -1,23 +1,20 @@
 CXX=g++
 LIBS=-lGL -lGLU -lglut
-CPPFLAGS=-Wall
+CPPFLAGS=-Wall -std=c++11
 
 BIN=../bin
-SOURCES=
-
-ROBOT_LIB_SRCS=Window.cpp
 
 all: cgrobot main
 
 exec: main
-	../bin/main
+	$(BIN)/main
 
-main: main.cpp cgrobot
-	$(CXX) $< $(BIN)/WorldObject.o $(BIN)/Robot.o $(BIN)/Camera.o $(BIN)/Window.o $(BIN)/Maze.o -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
+main: main.cpp bmp.o cgrobot
+	$(CXX) $< $(BIN)/bmp.o $(BIN)/WorldObject.o $(BIN)/Robot.o $(BIN)/Camera.o $(BIN)/Window.o $(BIN)/Maze.o -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
 
 cgrobot: Window.o WorldObject.o Maze.o Camera.o Robot.o
 
-Camera.o: ./cgrobot/Camera.cpp
+Camera.o: cgrobot/Camera.cpp
 	$(CXX) -c $< -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
 
 Window.o: cgrobot/Window.cpp
@@ -32,7 +29,10 @@ Robot.o: cgrobot/Robot.cpp
 WorldObject.o: cgrobot/WorldObject.cpp
 	$(CXX) -c $< -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
 
-clean:
-	rm $(BIN)/main $(BIN)/Window.o $(BIN)/Camera.o $(BIN)/Maze.o $(BIN)/Robot.o
+bmp.o: bmp.cpp
+	$(CXX) -c $< -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
 
-.PHONY: cgrobot
+clean:
+	rm $(BIN)/WorldObject.o $(BIN)/bmp.o $(BIN)/Window.o $(BIN)/Camera.o $(BIN)/Maze.o $(BIN)/Robot.o $(BIN)/main 
+
+#.PHONY: cgrobot
