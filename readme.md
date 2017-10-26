@@ -3,6 +3,8 @@ Robô Computação Gráfica
 
 ## Compilando
 
+Na pasta `src`:
+
 ```sh
 make      # Compila
 make exec # Compila e roda
