@@ -162,7 +162,7 @@ void Maze::draw()
 
     //glBindTexture(GL_TEXTURE_2D, m_wallTexture);
 
-    glTranslatef(-1, (m_cubeAspect / 2)-1, 0);
+    glTranslatef(-0.5, (m_cubeAspect / 2)-1, 0);
 
     for (i = 0; i < m_matrixRows; i++) {
         glPushMatrix();
