@@ -91,11 +91,11 @@ void update(int)
     maze_camera.posZ = robot.posZ;
     robot_camera.lookAt(&robot);
 
-    plant.posX = maze.indexX(14, 14);
-    plant.posZ = maze.indexZ(14, 14);
+    plant.posX = maze.indexX(12, 3);
+    plant.posZ = maze.indexZ(12, 3);
 
-    lighter.posX = maze.indexX(3, 9);
-    lighter.posZ = maze.indexZ(3, 9);
+    lighter.posX = maze.indexX(5, 13);
+    lighter.posZ = maze.indexZ(5, 13);
 
     robot.update();
     maze.update();
