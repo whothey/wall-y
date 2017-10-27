@@ -142,6 +142,4 @@ void Plant::draw()
     glPopMatrix();
 }
 
-void Plant::update()
-{
-}
+void Plant::update() { }

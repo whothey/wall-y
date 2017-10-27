@@ -41,6 +41,6 @@ bmp.o: bmp.cpp
 	$(CXX) -c $< -o $(BIN)/$@ $(LIBS) $(CPPFLAGS)
 
 clean:
-	rm $(BIN)/WorldObject.o $(BIN)/bmp.o $(BIN)/Window.o $(BIN)/Camera.o $(BIN)/Maze.o $(BIN)/Robot.o $(BIN)/main 
+	rm $(BIN)/WorldObject.o $(BIN)/bmp.o $(BIN)/Window.o $(BIN)/Plant.o $(BIN)/Lighter.o $(BIN)/Camera.o $(BIN)/Maze.o $(BIN)/Robot.o $(BIN)/main
 
 #.PHONY: cgrobot

@@ -59,6 +59,7 @@ void draw(void)
 
     current_camera->activate();
 
+    lighter.draw();
     robot.draw();
     lighter.draw();
     plant.draw();
