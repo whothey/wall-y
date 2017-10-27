@@ -160,9 +160,9 @@ void Maze::draw()
 
     glColor3f(0, 1, 0);
 
-    glBindTexture(GL_TEXTURE_2D, m_wallTexture);
+    //glBindTexture(GL_TEXTURE_2D, m_wallTexture);
 
-    glTranslatef(0, m_cubeAspect / 2, 0);
+    glTranslatef(0, (m_cubeAspect / 2)-1, 0);
 
     for (i = 0; i < m_matrixRows; i++) {
         glPushMatrix();

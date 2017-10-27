@@ -587,7 +587,7 @@ void Robot::draw()
 
     glPushMatrix();
       WorldObject::draw();
-      glTranslatef(0, 3.5, 0);
+      glTranslatef(0, 2.5, 0);
 
       glPushMatrix();
         drawBody();
