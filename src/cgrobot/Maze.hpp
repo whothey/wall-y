@@ -25,6 +25,11 @@ public:
 
     void loadFromMatrix(GLint *adjMatrix, size_t nrows, size_t ncols);
     void drawWall();
+
+    GLdouble indexX(size_t i, size_t j);
+    GLdouble indexY(size_t i, size_t j);
+    GLdouble indexZ(size_t i, size_t j);
+
     virtual void init();
     virtual void draw();
     virtual void update();

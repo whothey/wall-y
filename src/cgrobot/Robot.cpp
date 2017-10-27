@@ -601,5 +601,14 @@ void Robot::draw()
 
 void Robot::update()
 {
-    rotateEixo += 1;
+    // Numero baseado no movimento atual do personagem
+    // A multiplicação por 15 é para aumentar a impressão das rodas girando
+    rotateEixo = (posX + posZ) * 15;
+
+    if (cabecaEixo < -40)
+        headMoveDirection = 1;
+    else if (cabecaEixo > 40)
+        headMoveDirection = -1;
+
+    cabecaEixo += headMoveDirection * 1;
 }

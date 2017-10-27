@@ -13,6 +13,7 @@ Window::~Window() {
 void Window::setSize(int w, int h) { m_sizeW = w; m_sizeH = h; }
 void Window::setPosition(int x, int y) { m_wX = x; m_wY = y; }
 void Window::setDisplayModes(unsigned int modes) { m_modes = modes; }
+void Window::setIdleFunc(void (*fn)(void)) { m_IdleFunc = fn; }
 void Window::setDisplayFunc(void (*fn)(void)) { m_DisplayFunc = fn; }
 void Window::setReshapeFunc(void (*fn)(GLint, GLint)) { m_ReshapeFunc = fn; }
 void Window::setKeyboardFunc(void (*fn)(unsigned char, int, int)) { m_KeyboardFunc = fn; }

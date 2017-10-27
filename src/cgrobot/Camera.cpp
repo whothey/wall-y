@@ -28,9 +28,9 @@ void Camera::follow(WorldObject *obj)
 
     following = obj;
 
-    posX = obj->posX + offsetX;
-    posY = obj->posY + offsetY;
-    posZ = obj->posZ + offsetZ;
+    //posX = obj->posX + offsetX;
+    //posY = obj->posY + offsetY;
+    //posZ = obj->posZ + offsetZ;
 
     m_followX = obj->posX;
     m_followY = obj->posY;
@@ -47,42 +47,27 @@ void Camera::turnY(GLdouble dg)
 
     GLdouble rad = rotY * M_PI / 180;
 
+    std::cout << "Pos: (" << posX << ", " << posY << ", " << posZ << ")" << std::endl;
     posX = posX * cos(rad) - posZ * sin(rad);
     posZ = posX * sin(rad) + posZ * cos(rad);
+    std::cout << "New Pos: (" << posX << ", " << posY << ", " << posZ << ")" << std::endl;
+
+    turnOffset(dg);
+
+    std::cout << "New Pos + Offset: (" << posX + offsetX << ", " << posY + offsetY << ", " << posZ + offsetZ << ")" << std::endl;
 }
 
 void Camera::turnOffset(GLdouble dg)
 {
     GLdouble rad = dg * M_PI / 180;
-    GLdouble oldOffsetX = offsetX, oldOffsetZ = offsetZ;
 
-    rotY += dg;
-
-    //posX = (m_followX + offsetX) * cos(rad) - (m_followZ + offsetZ) * sin(rad);
-    //posZ = (m_followX + offsetX) * sin(rad) + (m_followZ + offsetZ) * cos(rad);
+    std::cout << "Offsets: (" << offsetX << ", " << offsetY << ", " << offsetZ << ")" << std::endl;
 
     offsetX = offsetX * cos(rad) - offsetZ * sin(rad);
+    offsetY = offsetY;
     offsetZ = offsetX * sin(rad) + offsetZ * cos(rad);
 
-    posX -= oldOffsetX + offsetX;
-    posZ -= oldOffsetZ + offsetZ;
-}
-
-void Camera::moveOffset(GLdouble x, GLdouble y, GLdouble z)
-{
-    GLdouble
-        radRotY = rotY * M_PI / 180.0f,
-        oldOffsetX = offsetX,
-        oldOffsetY = offsetY,
-        oldOffsetZ = offsetZ;
-
-    offsetX += x * cos(radRotY) + z * sin(radRotY);
-    offsetY += y;
-    offsetZ += -x * sin(radRotY) + z * cos(radRotY);
-
-    posX -= oldOffsetX + offsetX;
-    posY -= oldOffsetY + offsetY;
-    posZ -= oldOffsetZ + offsetZ;
+    std::cout << "New offsets: (" << offsetX << ", " << offsetY << ", " << offsetZ << ")" << std::endl;
 }
 
 void Camera::up(GLdouble x, GLdouble y, GLdouble z)
@@ -108,27 +93,8 @@ void Camera::turnV(GLdouble dg)
 
 void Camera::activate()
 {
-    //GLdouble radRotY = rotY * M_PI / 180, diffX, diffY, diffZ;
-
-    //if (following != nullptr) {
-    //    diffX = following->posX - m_followX;
-    //    diffY = following->posY - m_followY;
-    //    diffZ = following->posX - m_followX;
-
-    //    posX += diffX * cos(radRotY) - diffZ * sin(radRotY);
-    //    posY += diffY;
-    //    posZ += diffX * sin(radRotY) + diffZ * cos(radRotY);
-
-    //    if (diffX != 0 || diffY != 0 || diffZ != 0)
-    //        std::cout << "Moving: (" << diffX << ", " << diffY << ", " << diffZ << ")" << std::endl;
-
-    //    m_followX = following->posX;
-    //    m_followY = following->posY;
-    //    m_followZ = following->posZ;
-    //}
-
     gluLookAt(
-        posX, posY, posZ,
+        posX + offsetX, posY + offsetY, posZ + offsetZ,
         m_cntX, m_cntY, m_cntZ,
         m_upX , m_upY , m_upZ
     );

@@ -5,7 +5,11 @@
 #include "cgrobot/Maze.hpp"
 #include "cgrobot/Robot.hpp"
 #include "cgrobot/Plant.hpp"
+<<<<<<< HEAD
 #include "cgrobot/lighter.hpp"
+=======
+#include "cgrobot/Lighter.hpp"
+>>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
 #include "cgrobot/Window.hpp"
 
 #ifndef W_WIDTH
@@ -20,7 +24,15 @@
  #define MAZE_FILE "../mazes/maze_two.mcsv"
 #endif
 
+#ifndef FPS
+ #define FPS 60
+#endif
+
 int *maze_matrix = nullptr;
+unsigned int
+    initial_time = time(NULL),
+    final_time,
+    frames = 0;
 
 enum Control {
     Camera,
@@ -46,26 +58,57 @@ void draw(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    robot_camera.lookAt(&robot);
-
-    current_camera->activate();
-
     // Limpa a janela de visualização com a cor de fundo especificada
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    robot.update();
-    maze.update();
+    current_camera->activate();
 
     lighter.draw();
     robot.draw();
+<<<<<<< HEAD
     plant.draw();
     //maze.draw();
+=======
+    lighter.draw();
+    plant.draw();
+    maze.draw();
+>>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
 
     // Executa os comandos OpenGL
     glFlush();
 
-    // Redraw!
+    // Frame count
+    frames++;
+    final_time = time(NULL);
+
+    if (final_time - initial_time > 0) {
+        std::cout << "FPS: " << frames / (final_time - initial_time) << std::endl;
+        frames = 0;
+        initial_time = final_time;
+    }
+}
+
+void update(int)
+{
     glutPostRedisplay();
+
+    maze_camera.lookAt(&robot);
+    maze_camera.posX = robot.posX;
+    maze_camera.posZ = robot.posZ;
+    robot_camera.lookAt(&robot);
+
+    plant.posX = maze.indexX(3, 2);
+    plant.posZ = maze.indexZ(3, 2);
+
+    lighter.posX = maze.indexX(5, 4);
+    lighter.posZ = maze.indexZ(5, 4);
+
+    robot.update();
+    maze.update();
+    lighter.update();
+    plant.update();
+
+    glutTimerFunc(1000 / FPS, update, 0);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -95,9 +138,9 @@ void keyboard(unsigned char key, int x, int y)
 
         case 'w':
         case 'W':
-            if (control == Robot)
+            if (control == Robot) {
                 robot.move(0, 0, 1);
-            else
+            } else
                 current_camera->move(0, 0, 1);
             break;
 
@@ -105,9 +148,8 @@ void keyboard(unsigned char key, int x, int y)
         case 'A':
             if (control == Robot) {
                 robot.turnY(5);
-                robot_camera.turnY(-5);
             } else {
-                maze_camera.move(-1, 0, 0);
+                robot_camera.turnY(-5);
             }
 
             break;
@@ -116,12 +158,8 @@ void keyboard(unsigned char key, int x, int y)
         case 'S':
             if (control == Robot) {
                 robot.move(0, 0, -1);
-                //robot_camera.moveOffset(0, 0, -1);
             } else {
-                if (current_camera == &robot_camera)
-                    robot_camera.offsetZ -= 1;
-                else
-                    current_camera->move(0, 0, -1);
+                current_camera->move(0, 0, -1);
             }
             break;
 
@@ -130,12 +168,18 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot) {
                 robot.turnY(-5);
                 robot_camera.turnY(5);
+                //robot_camera.turnOffset(-5);
             } else {
-                if (current_camera == &robot_camera)
-                    robot_camera.moveOffset(1, 0, 0);
-                else
-                    current_camera->turnV(-5);
+                current_camera->move(1, 0, 0);
             }
+            break;
+
+        case '+':
+            current_camera->move(0, 0, 1);
+            break;
+
+        case '-':
+            current_camera->move(0, 0, -1);
             break;
 
         default: break;
@@ -146,31 +190,19 @@ void special_input(int key, int x, int y)
 {
     switch (key) {
     case GLUT_KEY_UP:
-        if (control == Robot)
-            robot.turnZ(45);
-        else
-            current_camera->turnH(-5);
+        current_camera->move(0, 1, 0);
         break;
 
     case GLUT_KEY_DOWN:
-        if (control == Robot)
-            robot.turnZ(45);
-        else
-            current_camera->turnH(5);
+        current_camera->move(0, -1, 0);
         break;
 
     case GLUT_KEY_LEFT:
-        if (control == Robot)
-            robot.turnZ(45);
-        else
-            current_camera->turnV(-5);
+        current_camera->move(1, 0, 0);
         break;
 
     case GLUT_KEY_RIGHT:
-        if (control == Robot)
-            robot.turnZ(45);
-        else
-            current_camera->turnV(5);
+        current_camera->move(-1, 0, 0);
         break;
 
     default:
@@ -238,6 +270,8 @@ int main(int argc, char **argv)
     window.setReshapeFunc(resize_window);
     window.setKeyboardFunc(keyboard);
     window.setSpecialFunc(special_input);
+
+    glutTimerFunc(1000 / FPS, update, 0);
 
     robot_camera.lookAt(&robot);
     robot_camera.up(0, 1, 0);

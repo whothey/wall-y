@@ -13,6 +13,7 @@ public:
     ~Robot();
 
     GLUquadricObj *quadric;
+    GLint headMoveDirection = 1;
     GLdouble rotateEixo, olhoX = 0.5, olhoY = 2.75, cabecaEixo, arm; 
 
     void drawEyes();

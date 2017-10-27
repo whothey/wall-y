@@ -9,6 +9,7 @@ namespace cgrobot {
 class Window {
     GLint m_sizeW, m_sizeH, m_wX, m_wY, m_idWindow;
     void
+        (*m_IdleFunc)(void),
         (*m_DisplayFunc)(void),
         (*m_ReshapeFunc)(GLint, GLint),
         (*m_KeyboardFunc)(unsigned char, int, int),
@@ -27,6 +28,7 @@ public:
     void init();
     void start();
     void setCamera(Camera *c);
+    void setIdleFunc(void (*)(void));
     void setDisplayFunc(void (*)(void));
     void setReshapeFunc(void (*)(GLint, GLint));
     void setKeyboardFunc(void (*)(unsigned char, int, int));
