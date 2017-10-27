@@ -213,7 +213,7 @@ void resize_window(GLsizei w, GLsizei h)
     glLoadIdentity();
 
     // Define campo de visão
-    gluPerspective(90, w/h, 1, 150);
+    gluPerspective(90, w/h, 1, 300);
 }
 
 // Ugly for now
