@@ -7,7 +7,7 @@ Robot::Robot(GLdouble x, GLdouble y, GLdouble z)
     posX = x, posY = y, posZ =z;
 
     quadric = gluNewQuadric();
-    
+
     gluQuadricDrawStyle(quadric, GLU_FILL);
     gluQuadricOrientation(quadric, GLU_OUTSIDE);
     gluQuadricNormals(quadric, GLU_SMOOTH);
@@ -153,14 +153,12 @@ void Robot::drawBody()
 		glPushMatrix();
 			glColor3f ((168/255.f),(168/255.f), (168/255.f) );
 			glTranslatef(-1	, 1, 1.15);
-			//glScalef(0.3, 0.2, 1);
 			glutSolidCube(0.8);
 		glPopMatrix();
 
 		glPushMatrix();
 			glColor3f ((217/255.f),(217/255.f), (25/255.f) );
 			glTranslatef(-1.1, 1.1, 1.5);
-			//glScalef(0.3, 0.2, 1);
 			glutSolidCube(0.3);
 		glPopMatrix();
 
@@ -168,7 +166,6 @@ void Robot::drawBody()
 		glPushMatrix();
 			glColor3f (1,0,0 );
 			glTranslatef(-0.2, 0.85, 1.5);
-			//glScalef(0.3, 0.2, 1);
 			glutSolidCube(0.3);
 		glPopMatrix();
 
@@ -176,14 +173,12 @@ void Robot::drawBody()
 		glPushMatrix();
 			glColor3f (0,0,1 );
 			glTranslatef(0.5, 1.2, 1.5);
-			//glScalef(0.3, 0.2, 1);
 			glutSolidCube(0.3);
 		glPopMatrix();
 
 		glPushMatrix();
 			glColor3f (1,0,1 );
 			glTranslatef(1, 0.85, 1.5);
-			//glScalef(0.3, 0.2, 1);
 			glutSolidCube(0.3);
 		glPopMatrix();
 }
@@ -305,8 +300,8 @@ void Robot::drawWheels()
 				glPopMatrix();
 			glPopMatrix(); //ENCERRA RODA 1
 
-			
-			glPopMatrix(); //RODA 2 ESQUERDA
+
+			glPushMatrix(); //RODA 2 ESQUERDA
 				glPushMatrix();	//marrom- roda menor inferior
 						glColor3f(0.368f, 0.204f, 0.092f);
 						glTranslatef(-2,-2.1, -0.95);
@@ -469,7 +464,7 @@ void Robot::drawWheels()
 		glPopMatrix();
 
 		//RODA 2 ESQUERDA
-		glPopMatrix();
+		glPushMatrix();
 			//marrom- roda menor inferior
 			glPushMatrix();
 					glColor3f(0.368f, 0.204f, 0.092f);

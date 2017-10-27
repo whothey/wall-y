@@ -4,6 +4,8 @@
 #include "cgrobot/Camera.hpp"
 #include "cgrobot/Maze.hpp"
 #include "cgrobot/Robot.hpp"
+#include "cgrobot/Plant.hpp"
+#include "cgrobot/lighter.hpp"
 #include "cgrobot/Window.hpp"
 
 #ifndef W_WIDTH
@@ -35,6 +37,8 @@ cgrobot::Camera
     *current_camera = &robot_camera;
 
 cgrobot::Robot robot(0, 0, 5);
+cgrobot::Plant plant(0, 0, 10);
+cgrobot::Lighter lighter(5, 0, 5);
 
 // Função callback chamada para fazer o desenho
 void draw(void)
@@ -52,8 +56,10 @@ void draw(void)
     robot.update();
     maze.update();
 
+    lighter.draw();
     robot.draw();
-    maze.draw();
+    plant.draw();
+    //maze.draw();
 
     // Executa os comandos OpenGL
     glFlush();
