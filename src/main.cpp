@@ -272,6 +272,7 @@ int main(int argc, char **argv)
     maze_camera.lookAt(0, 0, 0);
     maze_camera.up(0, 0, 1);
 
+    maze.setAscpect(10);
     window.init();
     maze.init();
     window.start();
