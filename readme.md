@@ -1,6 +1,11 @@
 Robô Computação Gráfica
 =============================================
 
+## Alunos
+
+- Gabriel Henrique Rudey
+- Ricardo Augusto Müller
+
 ## Cameras
 
 Existem duas cameras, a camera do robo, controlada com WASD e +- e a camera do teto, a segunda
