@@ -140,7 +140,7 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot) {
                 robot.turnY(5);
             } else {
-                robot_camera.turnY(-5);
+                current_camera->move(1, 0, 0);
             }
 
             break;
@@ -158,19 +158,17 @@ void keyboard(unsigned char key, int x, int y)
         case 'D':
             if (control == Robot) {
                 robot.turnY(-5);
-                robot_camera.turnY(5);
-                //robot_camera.turnOffset(-5);
             } else {
-                current_camera->move(1, 0, 0);
+                current_camera->move(-1, 0, 0);
             }
             break;
 
         case '+':
-            current_camera->move(0, 0, 1);
+            current_camera->move(0, 1, 0);
             break;
 
         case '-':
-            current_camera->move(0, 0, -1);
+            current_camera->move(0, -1, 0);
             break;
 
         default: break;
