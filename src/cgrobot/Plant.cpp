@@ -22,17 +22,6 @@ Plant::~Plant()
     gluDeleteQuadric(quadric);
 }
 
-<<<<<<< HEAD
-void Plant::turn(GLdouble dg)
-{
-    GLdouble rad = dg * M_PI / 180;
-
-    posX = posX * cos(rad) - posY * sin(rad);
-    posY = posX * sin(rad) + posY * cos(rad);
-}
-
-=======
->>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
 void Plant::drawGreen()
 {
   //PLANTA
@@ -153,10 +142,4 @@ void Plant::draw()
     glPopMatrix();
 }
 
-void Plant::update()
-{
-<<<<<<< HEAD
-    rotateEixo += 1;
-=======
->>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
-}
+void Plant::update() { }

@@ -13,10 +13,6 @@ public:
     ~Plant();
 
     GLUquadricObj *quadric;
-<<<<<<< HEAD
-    GLdouble rotateEixo=0;
-=======
->>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
 
     void drawGreen  ();
     void drawBoot();
@@ -24,14 +20,6 @@ public:
     void update();
     void init();
     void draw();
-<<<<<<< HEAD
-
-    void turn(GLdouble dg);
-};
-}
-#endif // _CGR_ROBOT_H
-=======
 };
 }
 #endif // _CGR_PLANT_H
->>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c

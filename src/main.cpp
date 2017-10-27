@@ -5,11 +5,7 @@
 #include "cgrobot/Maze.hpp"
 #include "cgrobot/Robot.hpp"
 #include "cgrobot/Plant.hpp"
-<<<<<<< HEAD
-#include "cgrobot/lighter.hpp"
-=======
 #include "cgrobot/Lighter.hpp"
->>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
 #include "cgrobot/Window.hpp"
 
 #ifndef W_WIDTH
@@ -65,14 +61,9 @@ void draw(void)
 
     lighter.draw();
     robot.draw();
-<<<<<<< HEAD
-    plant.draw();
-    //maze.draw();
-=======
     lighter.draw();
     plant.draw();
     maze.draw();
->>>>>>> 93164c3ea2a9097a42349864af42395ccb8fb52c
 
     // Executa os comandos OpenGL
     glFlush();
