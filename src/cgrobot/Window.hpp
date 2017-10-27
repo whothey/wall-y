@@ -32,6 +32,7 @@ public:
     void setDisplayFunc(void (*)(void));
     void setReshapeFunc(void (*)(GLint, GLint));
     void setKeyboardFunc(void (*)(unsigned char, int, int));
+    void setSpecialFunc(void (*fn)(int, int, int));
 
     //virtual void draw();
     //virtual void reshape();
