@@ -1,6 +1,12 @@
 Robô Computação Gráfica
 =============================================
 
+## Cameras
+
+Existem duas cameras, a camera do robo, controlada com WASD e +- e a camera do teto, a segunda
+sempre segue o robô, e sua movimentaçao só pode ser feita com + e -, já que as outras coordenadas
+são definidas pelo robô;
+
 ## Compilando
 
 Na pasta `src`:

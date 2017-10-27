@@ -48,6 +48,9 @@ cgrobot::Robot robot(0, 0, 5);
 cgrobot::Plant plant(0, 0, 10);
 cgrobot::Lighter lighter(5, 0, 5);
 
+GLdouble rotAngle = 0, deltaAngle = 0;
+GLint xOrigin = -1;
+
 // Função callback chamada para fazer o desenho
 void draw(void)
 {
@@ -241,6 +244,34 @@ int* load_maze_csv(FILE *f, size_t& rows, size_t& cols)
     return maze;
 }
 
+void mouseButton(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON) {
+            std::cout << "left ";
+		if (state == GLUT_UP) {
+			rotAngle += deltaAngle;
+			xOrigin = -1;
+            std::cout << "NOT " << xOrigin;
+		} else {
+			xOrigin = x;
+            std::cout << "PRESSING " << xOrigin;
+		}
+	}
+}
+
+void mouseMove(int x, int y)
+{
+	// this will only be true when the left button is down
+	if (xOrigin >= 0) {
+		// update deltaAngle
+		deltaAngle = (x - xOrigin) * 0.001f;
+
+		// update camera's direction
+		robot_camera.lx = sin(rotAngle + deltaAngle);
+		robot_camera.lz = -cos(rotAngle + deltaAngle);
+	}
+}
+
 // Programa Principal
 int main(int argc, char **argv)
 {
@@ -259,6 +290,9 @@ int main(int argc, char **argv)
     window.setReshapeFunc(resize_window);
     window.setKeyboardFunc(keyboard);
     window.setSpecialFunc(special_input);
+
+	glutMotionFunc(mouseMove);
+    glutMouseFunc(mouseButton);
 
     glutTimerFunc(1000 / FPS, update, 0);
 
