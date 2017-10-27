@@ -95,7 +95,7 @@ void Camera::activate()
 {
     gluLookAt(
         posX + offsetX, posY + offsetY, posZ + offsetZ,
-        m_cntX, m_cntY, m_cntZ,
+        m_cntX + lx, m_cntY, m_cntZ + lz,
         m_upX , m_upY , m_upZ
     );
 }

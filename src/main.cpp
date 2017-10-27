@@ -48,6 +48,9 @@ cgrobot::Robot robot(0, 0, 5);
 cgrobot::Plant plant(0, 0, 10);
 cgrobot::Lighter lighter(5, 0, 5);
 
+GLdouble rotAngle = 0, deltaAngle = 0;
+GLint xOrigin = -1;
+
 // Função callback chamada para fazer o desenho
 void draw(void)
 {
@@ -140,7 +143,7 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot) {
                 robot.turnY(5);
             } else {
-                robot_camera.turnY(-5);
+                current_camera->move(1, 0, 0);
             }
 
             break;
@@ -158,19 +161,17 @@ void keyboard(unsigned char key, int x, int y)
         case 'D':
             if (control == Robot) {
                 robot.turnY(-5);
-                robot_camera.turnY(5);
-                //robot_camera.turnOffset(-5);
             } else {
-                current_camera->move(1, 0, 0);
+                current_camera->move(-1, 0, 0);
             }
             break;
 
         case '+':
-            current_camera->move(0, 0, 1);
+            current_camera->move(0, 1, 0);
             break;
 
         case '-':
-            current_camera->move(0, 0, -1);
+            current_camera->move(0, -1, 0);
             break;
 
         default: break;
@@ -215,7 +216,7 @@ void resize_window(GLsizei w, GLsizei h)
     glLoadIdentity();
 
     // Define campo de visão
-    gluPerspective(90, w/h, 1, 150);
+    gluPerspective(90, w/h, 1, 300);
 }
 
 // Ugly for now
@@ -243,6 +244,34 @@ int* load_maze_csv(FILE *f, size_t& rows, size_t& cols)
     return maze;
 }
 
+void mouseButton(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON) {
+            std::cout << "left ";
+		if (state == GLUT_UP) {
+			rotAngle += deltaAngle;
+			xOrigin = -1;
+            std::cout << "NOT " << xOrigin;
+		} else {
+			xOrigin = x;
+            std::cout << "PRESSING " << xOrigin;
+		}
+	}
+}
+
+void mouseMove(int x, int y)
+{
+	// this will only be true when the left button is down
+	if (xOrigin >= 0) {
+		// update deltaAngle
+		deltaAngle = (x - xOrigin) * 0.001f;
+
+		// update camera's direction
+		robot_camera.lx = sin(rotAngle + deltaAngle);
+		robot_camera.lz = -cos(rotAngle + deltaAngle);
+	}
+}
+
 // Programa Principal
 int main(int argc, char **argv)
 {
@@ -262,6 +291,9 @@ int main(int argc, char **argv)
     window.setKeyboardFunc(keyboard);
     window.setSpecialFunc(special_input);
 
+	glutMotionFunc(mouseMove);
+    glutMouseFunc(mouseButton);
+
     glutTimerFunc(1000 / FPS, update, 0);
 
     robot_camera.lookAt(&robot);
@@ -274,6 +306,7 @@ int main(int argc, char **argv)
     maze_camera.lookAt(0, 0, 0);
     maze_camera.up(0, 0, 1);
 
+    maze.setAscpect(10);
     window.init();
     maze.init();
     window.start();

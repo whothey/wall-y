@@ -25,6 +25,7 @@ public:
 
     void loadFromMatrix(GLint *adjMatrix, size_t nrows, size_t ncols);
     void drawWall();
+    void setAscpect(GLdouble a);
 
     GLdouble indexX(size_t i, size_t j);
     GLdouble indexY(size_t i, size_t j);

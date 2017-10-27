@@ -15,7 +15,7 @@ class Camera : public WorldObject
         m_vrotation, m_hrotation;
 
 public:
-    GLdouble offsetX, offsetY, offsetZ;
+    GLdouble offsetX, offsetY, offsetZ, lx, lz;
     WorldObject *following = nullptr;
 
     Camera(GLdouble x, GLdouble y, GLdouble z);

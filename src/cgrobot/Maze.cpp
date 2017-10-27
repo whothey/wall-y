@@ -195,4 +195,9 @@ GLdouble Maze::indexZ(size_t i, size_t j)
     return j * m_cubeAspect;
 }
 
+void Maze::setAscpect(GLdouble a)
+{
+    m_cubeAspect = a;
+}
+
 void Maze::update() { }
