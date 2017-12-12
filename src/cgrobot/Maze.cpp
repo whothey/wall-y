@@ -7,7 +7,7 @@ Maze::Maze() : m_cubeHeight(10), m_cubeAspect(5) {};
 
 Maze::Maze(GLint *adjMatrix, size_t nrows, size_t ncols)
     : m_matrix(adjMatrix), m_matrixRows(nrows), m_matrixCols(ncols)
-    , m_cubeHeight(10), m_cubeAspect(5)
+    , m_cubeHeight(10), m_cubeAspect(10)
 {
     wallQuadric = gluNewQuadric();
     gluQuadricDrawStyle(wallQuadric, GLU_FILL);
@@ -73,10 +73,10 @@ void Maze::drawWall()
 {
     GLdouble size        = m_cubeAspect / 2;
     GLdouble center[3]   = { size / 2, size / 2, 0 };
-    GLfloat  specular[4] = { .8, .8, .8, 0.5 };
+    GLfloat  wallMaterial[4] = { .8, .8, .8, 0.5 };
 
     glColor3f(0, 1, 0);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, specular);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallMaterial);
 
     GLdouble vertexs[8][3] = {
         { center[0] + size, center[1] + size, center[2] - size },  // A - 0
@@ -226,7 +226,7 @@ void Maze::draw()
 
     //glBindTexture(GL_TEXTURE_2D, m_wallTexture);
 
-    glTranslatef(-0.5, (m_cubeAspect / 2)-1, 0);
+    glTranslatef(-0.5, m_cubeAspect / 4, 0);
 
     for (i = 0; i < m_matrixRows; i++) {
         glPushMatrix();
