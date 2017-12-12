@@ -24,6 +24,13 @@
  #define FPS 60
 #endif
 
+#define MENU_CAMERA_3RD  0
+#define MENU_CAMERA_MAZE 1
+#define MENU_CAMERA_FIX  2
+
+#define MENU_CAMERA_MOVEONCLICK 3
+#define MENU_CAMERA_MOVEALWAYS  4
+
 int *maze_matrix = nullptr;
 unsigned int
     initial_time = time(NULL),
@@ -35,6 +42,13 @@ enum Control {
     Robot
 };
 
+enum CameraPan {
+    None,
+    Pan,
+    Move
+};
+
+CameraPan pan = None;
 Control control = Camera;
 
 cgrobot::Maze maze = cgrobot::Maze();
@@ -51,6 +65,8 @@ cgrobot::Lighter lighter(5, 0, 5);
 GLdouble rotAngle = 0, deltaAngle = 0;
 GLint xOrigin = -1;
 
+int panStartX, panStartY;
+
 // Função callback chamada para fazer o desenho
 void draw(void)
 {
@@ -62,7 +78,6 @@ void draw(void)
 
     current_camera->activate();
 
-    lighter.draw();
     robot.draw();
     lighter.draw();
     plant.draw();
@@ -89,7 +104,7 @@ void update(int)
     maze_camera.lookAt(&robot);
     maze_camera.posX = robot.posX;
     maze_camera.posZ = robot.posZ;
-    robot_camera.lookAt(&robot);
+    //robot_camera.lookAt(&robot);
 
     plant.posX = maze.indexX(12, 3);
     plant.posZ = maze.indexZ(12, 3);
@@ -103,6 +118,57 @@ void update(int)
     plant.update();
 
     glutTimerFunc(1000 / FPS, update, 0);
+}
+
+void manageMenu(int option)
+{
+}
+
+void cameraMenuController(int option)
+{
+    switch (option) {
+    case MENU_CAMERA_3RD:
+        current_camera = &robot_camera;
+        break;
+    
+    case MENU_CAMERA_MAZE:
+        current_camera = &maze_camera;
+        break;
+
+    default:
+        std::cout << "Comando não encontrado." << std::endl;
+        break;
+    }
+}
+
+void controlMenuController(int option)
+{
+}
+
+void buildMenu()
+{
+    int
+        main_menu = glutCreateMenu(manageMenu),
+        controls_menu = glutCreateMenu(controlMenuController),
+        cameras_menu = glutCreateMenu(cameraMenuController);
+
+    glutSetMenu(controls_menu);
+
+    glutAddMenuEntry("Movimentar camera ao clicar", MENU_CAMERA_MOVEONCLICK);
+    glutAddMenuEntry("Movimentar camera ao mexer o mouse", MENU_CAMERA_MOVEALWAYS);
+
+    glutSetMenu(cameras_menu);
+
+    glutAddMenuEntry("Camera em Terceira Pessoa", MENU_CAMERA_3RD);
+    glutAddMenuEntry("Camera no Teto", MENU_CAMERA_MAZE);
+    glutAddMenuEntry("Fixar/Desfixar Camera no Robo", MENU_CAMERA_FIX);
+
+    glutSetMenu(main_menu);
+
+    glutAddSubMenu("Cameras", cameras_menu);
+    glutAddSubMenu("Controles", controls_menu);
+
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -134,8 +200,12 @@ void keyboard(unsigned char key, int x, int y)
         case 'W':
             if (control == Robot) {
                 robot.move(0, 0, 1);
-            } else
-                current_camera->move(0, 0, 1);
+            } else {
+                if (current_camera == &robot_camera)
+                    robot_camera.moveForward(2);
+                else
+                    current_camera->move(0, 0, 1);
+            }
             break;
 
         case 'a':
@@ -153,7 +223,10 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot) {
                 robot.move(0, 0, -1);
             } else {
-                current_camera->move(0, 0, -1);
+                if (current_camera == &robot_camera)
+                    robot_camera.moveForward(-2);
+                else
+                    current_camera->move(0, 0, -1);
             }
             break;
 
@@ -244,6 +317,47 @@ int* load_maze_csv(FILE *f, size_t& rows, size_t& cols)
     return maze;
 }
 
+void mouse_action(int button, int state, int x, int y)
+{
+    switch (button) {
+    case GLUT_LEFT_BUTTON:
+        if (state == GLUT_DOWN) {
+            pan = Pan;
+            panStartX = x;
+            panStartY = y;
+        } else {
+            pan = Move;
+        }
+
+        break;
+
+    case GLUT_MIDDLE_BUTTON:
+        if (state == GLUT_DOWN) {
+            panStartX = x;
+            panStartY = y;
+        }
+    }
+}
+
+void mouse_motion(int x, int y)
+{
+    int deltaX = x - panStartX;
+    int deltaY = y - panStartY;
+
+    if (pan == Pan) {
+        robot_camera.pitch += deltaY * 0.1f;
+        robot_camera.yaw   -= deltaX * 0.1f;
+
+        panStartX = x;
+        panStartY = y;
+    } else if (pan == Move) {
+        robot_camera.moveForward(-deltaY * 0.1f);
+
+        panStartX = x;
+        panStartY = y;
+    }
+}
+
 // Programa Principal
 int main(int argc, char **argv)
 {
@@ -262,14 +376,18 @@ int main(int argc, char **argv)
     window.setReshapeFunc(resize_window);
     window.setKeyboardFunc(keyboard);
     window.setSpecialFunc(special_input);
+    window.setMouseFunc(mouse_action);
+    window.setMotionFunc(mouse_motion);
 
     glutTimerFunc(1000 / FPS, update, 0);
 
-    robot_camera.lookAt(&robot);
+    //robot_camera.lookAt(&robot);
+    robot_camera.lookAt(0, 0, 0);
+    robot_camera.type = cgrobot::CameraType::ThirdPerson;
     robot_camera.up(0, 1, 0);
-    robot_camera.offsetX = 0;
-    robot_camera.offsetY = 10;
-    robot_camera.offsetZ = -10;
+    robot_camera.posX = robot.posX;
+    robot_camera.posY = robot.posY + 10;
+    robot_camera.posZ = robot.posZ - 10;
     robot_camera.follow(&robot);
 
     maze_camera.lookAt(0, 0, 0);
@@ -277,6 +395,7 @@ int main(int argc, char **argv)
 
     maze.setAscpect(10);
     window.init();
+    buildMenu();
     maze.init();
     window.start();
 

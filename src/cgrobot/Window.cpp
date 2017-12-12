@@ -18,6 +18,9 @@ void Window::setDisplayFunc(void (*fn)(void)) { m_DisplayFunc = fn; }
 void Window::setReshapeFunc(void (*fn)(GLint, GLint)) { m_ReshapeFunc = fn; }
 void Window::setKeyboardFunc(void (*fn)(unsigned char, int, int)) { m_KeyboardFunc = fn; }
 void Window::setSpecialFunc(void (*fn)(int, int, int)) { m_SpecialFunc = fn; }
+void Window::setMouseFunc(void (*fn)(int, int, int, int)) { m_MouseFunc = fn; }
+void Window::setMotionFunc(void (*fn)(int, int)) { m_MotionFunc = fn; }
+void Window::setPassiveMotionFunc(void (*fn)(int, int)) { m_PassiveMotionFunc = fn; }
 
 void Window::init()
 {
@@ -35,10 +38,12 @@ void Window::start()
     glutReshapeFunc(m_ReshapeFunc);
     glutKeyboardFunc(m_KeyboardFunc);
     glutSpecialFunc(m_SpecialFunc);
+    glutMouseFunc(m_MouseFunc);
+    glutMotionFunc(m_MotionFunc);
+    glutPassiveMotionFunc(m_PassiveMotionFunc);
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHT0);
-    float vAmbientLightBright[4] = {.5f, .5f, .5f, .5f};
+    float vAmbientLightBright[4] = {.3f, .3f, .3f, 1.f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, vAmbientLightBright);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);

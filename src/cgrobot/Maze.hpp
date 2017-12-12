@@ -3,6 +3,7 @@
 
 #include <GL/glut.h>
 #include "WorldObject.hpp"
+#include "../helpers.c"
 
 namespace cgrobot {
 class Maze : public WorldObject

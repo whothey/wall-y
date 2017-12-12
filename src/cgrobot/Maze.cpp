@@ -73,7 +73,7 @@ void Maze::drawWall()
 {
     GLdouble size        = m_cubeAspect / 2;
     GLdouble center[3]   = { size / 2, size / 2, 0 };
-    GLfloat  specular[4] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat  specular[4] = { .8, .8, .8, 0.5 };
 
     glColor3f(0, 1, 0);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, specular);
@@ -89,6 +89,8 @@ void Maze::drawWall()
         { center[0] - size, center[1] - size, center[2] - size },  // H - 7
     };
 
+    GLdouble v1[3], v2[3], normal[3];
+
     // Back
     glBegin(GL_QUADS);
 
@@ -100,11 +102,24 @@ void Maze::drawWall()
     glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[2]);
     glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[1]);
 
+    VEC(v1, vertexs[0], vertexs[3]);
+    VEC(v2, vertexs[2], vertexs[0]);
+    CROSS(normal, v1, v2);
+    NORMALIZE(normal);
+
+    glNormal3dv(normal);
+
     // Back
     glTexCoord2f(0, 0);       glVertex3dv(vertexs[1]);
     glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[2]);
     glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[5]);
     glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[4]);
+
+    VEC(v1, vertexs[4], vertexs[1]);
+    VEC(v2, vertexs[5], vertexs[2]);
+    CROSS(normal, v1, v2);
+    NORMALIZE(normal);
+    glNormal3dv(normal);
 
     // Top
     glTexCoord2f(0, 0);       glVertex3dv(vertexs[6]);
@@ -112,11 +127,23 @@ void Maze::drawWall()
     glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[1]);
     glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[4]);
 
+    VEC(v1, vertexs[4], vertexs[6]);
+    VEC(v2, vertexs[1], vertexs[0]);
+    CROSS(normal, v2, v1);
+    NORMALIZE(normal);
+    glNormal3dv(normal);
+
     // Left
     glTexCoord2f(0, 0);       glVertex3dv(vertexs[6]);
     glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[7]);
     glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[5]);
     glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[4]);
+
+    VEC(v1, vertexs[6], vertexs[7]);
+    VEC(v2, vertexs[5], vertexs[6]);
+    CROSS(normal, v2, v1);
+    NORMALIZE(normal);
+    glNormal3dv(normal);
 
     // Front
     glTexCoord2f(0, 0);       glVertex3dv(vertexs[6]);
@@ -124,11 +151,23 @@ void Maze::drawWall()
     glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[3]);
     glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[0]);
 
+    VEC(v1, vertexs[6], vertexs[7]);
+    VEC(v2, vertexs[3], vertexs[6]);
+    CROSS(normal, v2, v1);
+    NORMALIZE(normal);
+    glNormal3dv(normal);
+
     // Bottom
     glTexCoord2f(0, 0);       glVertex3dv(vertexs[3]);
     glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[2]);
     glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[5]);
     glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[7]);
+
+    VEC(v1, vertexs[3], vertexs[2]);
+    VEC(v2, vertexs[5], vertexs[3]);
+    CROSS(normal, v1, v2);
+    NORMALIZE(normal);
+    glNormal3dv(normal);
 
     glEnd();
 }
@@ -138,8 +177,10 @@ void Maze::draw()
     size_t i, j;
     GLfloat
         groundStart  = -m_cubeAspect / 2,
-        groundWidth  = (m_matrixCols) * m_cubeAspect,
-        groundHeight = (m_matrixRows) * m_cubeAspect;
+        groundWidth  = m_matrixCols * m_cubeAspect,
+        groundHeight = m_matrixRows * m_cubeAspect;
+
+    GLdouble v1[3], v2[3], p1[3], p2[3], normal[3];
 
     glPushMatrix();
 
@@ -156,6 +197,29 @@ void Maze::draw()
       glVertex3f(groundHeight, 0, groundWidth);
       glTexCoord2f(4.0f, 4.0f);
       glVertex3f(groundStart, 0, groundWidth);
+
+      p1[0] = groundStart;
+      p1[1] = 0;
+      p1[2] = groundStart;
+
+      p2[0] = groundStart;
+      p2[1] = 0;
+      p2[2] = groundWidth;
+
+      VEC(v1, p1, p2);
+
+      DUMP_COORDS_3v("p1", p1);
+      DUMP_COORDS_3v("p2", p2);
+
+      p2[0] = groundHeight;
+      p2[1] = 0;
+      p2[2] = groundWidth;
+
+      VEC(v2, p2, p1);
+
+      CROSS(normal, v1, v2);
+      NORMALIZE(normal);
+      glNormal3dv(normal);
     glEnd();
 
     glColor3f(0, 1, 0);

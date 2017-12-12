@@ -6,6 +6,12 @@
 #include "WorldObject.hpp"
 
 namespace cgrobot {
+
+enum CameraType { 
+    Locked,
+    ThirdPerson
+};
+
 class Camera : public WorldObject
 {
     GLdouble 
@@ -15,7 +21,11 @@ class Camera : public WorldObject
         m_vrotation, m_hrotation;
 
 public:
-    GLdouble offsetX, offsetY, offsetZ, lx, lz;
+    GLdouble offsetX, offsetY, offsetZ;
+    GLdouble pitch, yaw, roll, frontX, frontY, frontZ;
+
+    CameraType type = Locked;
+
     WorldObject *following = nullptr;
 
     Camera(GLdouble x, GLdouble y, GLdouble z);
@@ -34,6 +44,10 @@ public:
     void turnY(GLdouble dg);
     void turnH(GLdouble dg);
     void turnV(GLdouble dg);
+
+    void calcFront();
+    void moveForward(GLdouble);
+
     void init();
     void draw();
     void activate();

@@ -114,6 +114,28 @@ void Robot::drawEyes()
 				gluDisk(quadric, 0, 0.2f, 100, 100);
 			glPopMatrix();
 
+            glEnable(GL_LIGHTING);
+
+            glEnable(GL_LIGHT0);
+            GLfloat eyePosition[3] = { posX + olhoX, posY + olhoY, posZ };
+
+            glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 55.0);// set cutoff angle
+            glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 1); // set focusing strength
+            glLightfv(GL_LIGHT0, GL_DIFFUSE, eyeDiffuseLight);
+            glLightfv(GL_LIGHT0, GL_POSITION, eyePosition);
+            glLightfv(GL_LIGHT0, GL_SPECULAR, eyeSpecularLight);
+            glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, eyeLightDirection); 
+
+            DUMP_COORDS_3v("EYE", eyePosition);
+
+            //GLfloat robotPosition[3] = { posX, posY + 10, posZ };
+            //GLfloat spotDir[3] = { 0, -1, 0 };
+
+            //glEnable(GL_LIGHT1);
+            //glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 90.0);// set cutoff angle
+            //glLightfv(GL_LIGHT1, GL_POSITION, robotPosition);
+            //glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spotDir); 
+
 		glPopMatrix();
 }
 

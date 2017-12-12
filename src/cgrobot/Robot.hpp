@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 #include <cmath>
 #include "WorldObject.hpp"
+#include "../helpers.c"
 
 namespace cgrobot {
 class Robot : public WorldObject
@@ -15,6 +16,11 @@ public:
     GLUquadricObj *quadric;
     GLint headMoveDirection = 1;
     GLdouble rotateEixo, olhoX = 0.5, olhoY = 2.75, cabecaEixo, arm; 
+
+    GLfloat
+        eyeLightDirection[3] = {0., 0., 1.},
+        eyeDiffuseLight[4] = {1., 1., 1., 0.8},
+        eyeSpecularLight[4] = {1., 1., 1., 0.3};
 
     void drawEyes();
     void drawNeck();

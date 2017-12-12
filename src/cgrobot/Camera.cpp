@@ -1,5 +1,6 @@
 #include "Camera.hpp"
 #include <iostream>
+#include "../helpers.c"
 
 using namespace cgrobot;
 
@@ -43,31 +44,49 @@ void inline Camera::unfollow() { m_followX = m_followY = m_followZ = 0; }
 
 void Camera::turnY(GLdouble dg)
 {
+    GLdouble oldX = posX, oldZ = posZ;
+
     WorldObject::turnY(dg);
 
-    GLdouble rad = rotY * M_PI / 180;
+    GLdouble rad = dg * M_PI / 180;
 
-    std::cout << "Pos: (" << posX << ", " << posY << ", " << posZ << ")" << std::endl;
-    posX = posX * cos(rad) - posZ * sin(rad);
-    posZ = posX * sin(rad) + posZ * cos(rad);
-    std::cout << "New Pos: (" << posX << ", " << posY << ", " << posZ << ")" << std::endl;
+    posX = oldX * cos(rad) - oldZ * sin(rad);
+    posZ = oldX * sin(rad) + oldZ * cos(rad);
 
-    turnOffset(dg);
+    //glRotatef(0, 1, 0, rotY);
 
-    std::cout << "New Pos + Offset: (" << posX + offsetX << ", " << posY + offsetY << ", " << posZ + offsetZ << ")" << std::endl;
+    std::cout << "Rotation " << rotY << " and pos: " << posX << std::endl;
+
+    //turnOffset(dg);
 }
 
 void Camera::turnOffset(GLdouble dg)
 {
+    GLdouble oldX = offsetX, oldZ = offsetZ;
+
     GLdouble rad = dg * M_PI / 180;
 
-    std::cout << "Offsets: (" << offsetX << ", " << offsetY << ", " << offsetZ << ")" << std::endl;
+    offsetX = oldX * cos(rad) - oldZ * sin(rad);
+    offsetZ = oldX * sin(rad) + oldZ * cos(rad);
 
-    offsetX = offsetX * cos(rad) - offsetZ * sin(rad);
-    offsetY = offsetY;
-    offsetZ = offsetX * sin(rad) + offsetZ * cos(rad);
+    //glRotatef(0, 1, 0, dg);
 
-    std::cout << "New offsets: (" << offsetX << ", " << offsetY << ", " << offsetZ << ")" << std::endl;
+    std::cout << "Rotation " << rotY << " and offset: " << offsetX << std::endl;
+}
+
+void Camera::calcFront()
+{
+    GLdouble norm;
+
+    frontX = cos(DEG_TO_RAD(yaw)) * cos(DEG_TO_RAD(pitch)),
+    frontY = sin(DEG_TO_RAD(pitch)),
+    frontZ = sin(DEG_TO_RAD(yaw)) * cos(DEG_TO_RAD(pitch)),
+
+    norm = sqrt(pow(frontX, 2) + pow(frontY, 2) + pow(frontZ, 2));
+
+    frontX /= norm;
+    frontY /= norm;
+    frontZ /= norm;
 }
 
 void Camera::up(GLdouble x, GLdouble y, GLdouble z)
@@ -91,13 +110,30 @@ void Camera::turnV(GLdouble dg)
     m_vrotation += dg;
 }
 
+void Camera::moveForward(GLdouble distance)
+{
+    posX += frontX * distance;
+    posY += frontY * distance;
+    posZ += frontZ * distance;
+}
+
 void Camera::activate()
 {
-    gluLookAt(
-        posX + offsetX, posY + offsetY, posZ + offsetZ,
-        m_cntX + lx, m_cntY, m_cntZ + lz,
-        m_upX , m_upY , m_upZ
-    );
+    if (type == ThirdPerson) {
+        calcFront();
+
+        gluLookAt(
+            posX, posY, posZ,
+            posX + frontX, posY + frontY, posZ + frontZ,
+            m_upX , m_upY , m_upZ
+        );
+    } else {
+        gluLookAt(
+            posX, posY, posZ,
+            m_cntX, m_cntY, m_cntZ,
+            m_upX , m_upY , m_upZ
+        );
+    }
 }
 
 void Camera::draw() { activate(); }
