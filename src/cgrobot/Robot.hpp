@@ -18,7 +18,7 @@ public:
     GLdouble rotateEixo, olhoX = 0.5, olhoY = 2.75, cabecaEixo, arm; 
 
     GLfloat
-        eyeLightDirection[3] = {0., 0., 1.},
+        eyeLightDirection[3] = {0., -1., 0.},
         eyeDiffuseLight[4] = {1., 1., 1., 0.8},
         eyeSpecularLight[4] = {1., 1., 1., 0.3};
 

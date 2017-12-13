@@ -5,6 +5,22 @@
 #include "WorldObject.hpp"
 #include "../helpers.c"
 
+// Sim, eu estava com preguiça de copiar codigo por codigo
+#define MAZE_WALLFACE_NORMAL(a, b, c) \
+    VEC(v1, verts[a], verts[b]); \
+    VEC(v2, verts[c], verts[a]); \
+    CROSS(normal, v1, v2); \
+    NORMALIZE(normal); \
+    glNormal3dv(normal);
+
+// Sim, eu estava com preguiça de copiar codigo por codigo
+#define MAZE_WALLFACE(a, b, c, d) \
+    glTexCoord2f(0, 2.0f);    glVertex3dv(verts[a]); \
+    glTexCoord2f(0, 0);       glVertex3dv(verts[b]); \
+    glTexCoord2f(2.0f, 0);    glVertex3dv(verts[c]); \
+    glTexCoord2f(2.0f, 2.0f); glVertex3dv(verts[d]); \
+    MAZE_WALLFACE_NORMAL(a, b, c);
+
 namespace cgrobot {
 class Maze : public WorldObject
 {

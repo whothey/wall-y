@@ -6,6 +6,7 @@
 #include "cgrobot/Robot.hpp"
 #include "cgrobot/Plant.hpp"
 #include "cgrobot/Lighter.hpp"
+#include "cgrobot/WindowGlass.hpp"
 #include "cgrobot/Window.hpp"
 
 #ifndef W_WIDTH
@@ -27,9 +28,14 @@
 #define MENU_CAMERA_3RD  0
 #define MENU_CAMERA_MAZE 1
 #define MENU_CAMERA_FIX  2
+#define MENU_CAMERA_ONROBOT 3
 
-#define MENU_CAMERA_MOVEONCLICK 3
-#define MENU_CAMERA_MOVEALWAYS  4
+#define MENU_CAMERA_MOVEONCLICK 0
+#define MENU_CAMERA_MOVEALWAYS  1
+#define MENU_CONTROL_ROBOT      2
+
+#define MENU_AMBIENT_LIGHTS_ON  0
+#define MENU_AMBIENT_LIGHTS_OFF 1
 
 int *maze_matrix = nullptr;
 unsigned int
@@ -44,6 +50,7 @@ enum Control {
 
 enum CameraPan {
     None,
+    LockedPan,
     Pan,
     Move
 };
@@ -61,9 +68,13 @@ cgrobot::Camera
 cgrobot::Robot robot(0, 0, 5);
 cgrobot::Plant plant(0, 0, 10);
 cgrobot::Lighter lighter(5, 0, 5);
+cgrobot::WindowGlass windowglass(5, 0, 5);
 
 GLdouble rotAngle = 0, deltaAngle = 0;
 GLint xOrigin = -1;
+
+float ambientLight[4] = {0.3f, 0.3f, 0.3f, .3f};
+bool cameraOnRobot = false;
 
 int panStartX, panStartY;
 
@@ -78,10 +89,14 @@ void draw(void)
 
     current_camera->activate();
 
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
     robot.draw();
     lighter.draw();
     plant.draw();
     maze.draw();
+    windowglass.draw();
 
     // Executa os comandos OpenGL
     glFlush();
@@ -101,16 +116,21 @@ void update(int)
 {
     glutPostRedisplay();
 
+    if (cameraOnRobot) {
+        current_camera->posX = robot.posX;
+        current_camera->posZ = robot.posZ - 10;
+    }
+
     maze_camera.lookAt(&robot);
-    maze_camera.posX = robot.posX;
-    maze_camera.posZ = robot.posZ;
-    //robot_camera.lookAt(&robot);
 
     plant.posX = maze.indexX(12, 3);
     plant.posZ = maze.indexZ(12, 3);
 
     lighter.posX = maze.indexX(5, 13);
     lighter.posZ = maze.indexZ(5, 13);
+
+    windowglass.posX = maze.indexX(12, 14);
+    windowglass.posZ = maze.indexZ(12, 14);
 
     robot.update();
     maze.update();
@@ -135,6 +155,16 @@ void cameraMenuController(int option)
         current_camera = &maze_camera;
         break;
 
+    case MENU_CAMERA_FIX:
+        cameraOnRobot = !cameraOnRobot;
+        break;
+
+    case MENU_CAMERA_ONROBOT:
+        current_camera->posX = robot.posX;
+        current_camera->posZ = robot.posZ;
+        current_camera->lookAt(&robot);
+        break;
+
     default:
         std::cout << "Comando não encontrado." << std::endl;
         break;
@@ -143,30 +173,69 @@ void cameraMenuController(int option)
 
 void controlMenuController(int option)
 {
+    switch (option)
+    {
+    case MENU_CONTROL_ROBOT:
+        control = Robot;
+        break;
+
+    case MENU_CAMERA_MOVEONCLICK:
+        control = Camera;
+        pan = None;
+        break;
+
+    default:
+        std::cout << "Comando não encontrado" << std::endl;
+        break;
+    }
+}
+
+void ambientMenuController(int option)
+{
+    switch (option)
+    {
+    case MENU_AMBIENT_LIGHTS_ON:
+        ambientLight[0] = ambientLight[1] = ambientLight[2] = ambientLight[3] =  1.0;
+        break;
+
+    case MENU_AMBIENT_LIGHTS_OFF:
+        ambientLight[0] = ambientLight[1] = ambientLight[2] = 0.2f;
+        ambientLight[3] =  1.0;
+        break;
+    }
 }
 
 void buildMenu()
 {
     int
-        main_menu = glutCreateMenu(manageMenu),
+        main_menu     = glutCreateMenu(manageMenu),
+        ambient_menu  = glutCreateMenu(ambientMenuController),
         controls_menu = glutCreateMenu(controlMenuController),
-        cameras_menu = glutCreateMenu(cameraMenuController);
+        cameras_menu  = glutCreateMenu(cameraMenuController);
 
     glutSetMenu(controls_menu);
 
-    glutAddMenuEntry("Movimentar camera ao clicar", MENU_CAMERA_MOVEONCLICK);
-    glutAddMenuEntry("Movimentar camera ao mexer o mouse", MENU_CAMERA_MOVEALWAYS);
+    glutAddMenuEntry("Movimentar o robo", MENU_CONTROL_ROBOT);
+    glutAddMenuEntry("Movimentar camera com o mouse", MENU_CAMERA_MOVEALWAYS);
+    glutAddMenuEntry("Movimentar camera com o mouse ao clicar", MENU_CAMERA_MOVEONCLICK);
+
+    glutSetMenu(ambient_menu);
+
+    glutAddMenuEntry("Ativar Luz Global", MENU_AMBIENT_LIGHTS_ON);
+    glutAddMenuEntry("Desativar Luz Global", MENU_AMBIENT_LIGHTS_OFF);
 
     glutSetMenu(cameras_menu);
 
     glutAddMenuEntry("Camera em Terceira Pessoa", MENU_CAMERA_3RD);
     glutAddMenuEntry("Camera no Teto", MENU_CAMERA_MAZE);
-    glutAddMenuEntry("Fixar/Desfixar Camera no Robo", MENU_CAMERA_FIX);
+    glutAddMenuEntry("Fixar/Desafixar camera no robo", MENU_CAMERA_FIX);
+    glutAddMenuEntry("Mover camera ate o robo", MENU_CAMERA_ONROBOT);
 
     glutSetMenu(main_menu);
 
     glutAddSubMenu("Cameras", cameras_menu);
     glutAddSubMenu("Controles", controls_menu);
+    glutAddSubMenu("Ambiente", ambient_menu);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
@@ -321,11 +390,11 @@ void mouse_action(int button, int state, int x, int y)
 {
     switch (button) {
     case GLUT_LEFT_BUTTON:
-        if (state == GLUT_DOWN) {
+        if (state == GLUT_DOWN && pan != LockedPan) {
             pan = Pan;
             panStartX = x;
             panStartY = y;
-        } else {
+        } else if (pan != LockedPan) {
             pan = Move;
         }
 
@@ -333,6 +402,7 @@ void mouse_action(int button, int state, int x, int y)
 
     case GLUT_MIDDLE_BUTTON:
         if (state == GLUT_DOWN) {
+            pan = Move;
             panStartX = x;
             panStartY = y;
         }
@@ -344,7 +414,7 @@ void mouse_motion(int x, int y)
     int deltaX = x - panStartX;
     int deltaY = y - panStartY;
 
-    if (pan == Pan) {
+    if (pan == Pan || pan == LockedPan) {
         robot_camera.pitch += deltaY * 0.1f;
         robot_camera.yaw   -= deltaX * 0.1f;
 
@@ -393,7 +463,7 @@ int main(int argc, char **argv)
     maze_camera.lookAt(0, 0, 0);
     maze_camera.up(0, 0, 1);
 
-    maze.setAscpect(10);
+    maze.setAscpect(20);
     window.init();
     buildMenu();
     maze.init();

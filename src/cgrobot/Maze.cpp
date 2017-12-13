@@ -73,102 +73,33 @@ void Maze::drawWall()
 {
     GLdouble size        = m_cubeAspect / 2;
     GLdouble center[3]   = { size / 2, size / 2, 0 };
-    GLfloat  wallMaterial[4] = { .8, .8, .8, 0.5 };
+    //GLfloat  wallMaterial[4] = { .8, .8, .8, 0.5 };
 
     glColor3f(0, 1, 0);
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wallMaterial);
 
-    GLdouble vertexs[8][3] = {
-        { center[0] + size, center[1] + size, center[2] - size },  // A - 0
-        { center[0] + size, center[1] + size, center[2] + size },  // B - 1
-        { center[0] + size, center[1] - size, center[2] + size },  // C - 2
-        { center[0] + size, center[1] - size, center[2] - size },  // D - 3
-        { center[0] - size, center[1] + size, center[2] + size },  // E - 4
-        { center[0] - size, center[1] - size, center[2] + size },  // F - 5
-        { center[0] - size, center[1] + size, center[2] - size },  // G - 6
-        { center[0] - size, center[1] - size, center[2] - size },  // H - 7
+    GLdouble verts[8][3] = {
+        { center[0] + size, center[1] + size, center[2] + size },  // A - 0
+        { center[0] + size, center[1] - size, center[2] + size },  // B - 1
+        { center[0] + size, center[1] - size, center[2] - size },  // C - 2
+        { center[0] + size, center[1] + size, center[2] - size },  // D - 3
+        { center[0] - size, center[1] + size, center[2] - size },  // E - 4
+        { center[0] - size, center[1] - size, center[2] - size },  // F - 5
+        { center[0] - size, center[1] + size, center[2] + size },  // G - 6
+        { center[0] - size, center[1] - size, center[2] + size },  // H - 7
     };
 
+    // Usados na macro MAZE_WALLFACE
     GLdouble v1[3], v2[3], normal[3];
 
-    // Back
     glBegin(GL_QUADS);
-
-    glBindTexture(GL_TEXTURE_2D, m_wallTexture);
-
-    // Right
-    glTexCoord2f(0, 0);       glVertex3dv(vertexs[0]);
-    glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[3]);
-    glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[2]);
-    glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[1]);
-
-    VEC(v1, vertexs[0], vertexs[3]);
-    VEC(v2, vertexs[2], vertexs[0]);
-    CROSS(normal, v1, v2);
-    NORMALIZE(normal);
-
-    glNormal3dv(normal);
-
-    // Back
-    glTexCoord2f(0, 0);       glVertex3dv(vertexs[1]);
-    glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[2]);
-    glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[5]);
-    glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[4]);
-
-    VEC(v1, vertexs[4], vertexs[1]);
-    VEC(v2, vertexs[5], vertexs[2]);
-    CROSS(normal, v1, v2);
-    NORMALIZE(normal);
-    glNormal3dv(normal);
-
-    // Top
-    glTexCoord2f(0, 0);       glVertex3dv(vertexs[6]);
-    glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[0]);
-    glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[1]);
-    glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[4]);
-
-    VEC(v1, vertexs[4], vertexs[6]);
-    VEC(v2, vertexs[1], vertexs[0]);
-    CROSS(normal, v2, v1);
-    NORMALIZE(normal);
-    glNormal3dv(normal);
-
-    // Left
-    glTexCoord2f(0, 0);       glVertex3dv(vertexs[6]);
-    glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[7]);
-    glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[5]);
-    glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[4]);
-
-    VEC(v1, vertexs[6], vertexs[7]);
-    VEC(v2, vertexs[5], vertexs[6]);
-    CROSS(normal, v2, v1);
-    NORMALIZE(normal);
-    glNormal3dv(normal);
-
-    // Front
-    glTexCoord2f(0, 0);       glVertex3dv(vertexs[6]);
-    glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[7]);
-    glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[3]);
-    glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[0]);
-
-    VEC(v1, vertexs[6], vertexs[7]);
-    VEC(v2, vertexs[3], vertexs[6]);
-    CROSS(normal, v2, v1);
-    NORMALIZE(normal);
-    glNormal3dv(normal);
-
-    // Bottom
-    glTexCoord2f(0, 0);       glVertex3dv(vertexs[3]);
-    glTexCoord2f(2.0f, 0);    glVertex3dv(vertexs[2]);
-    glTexCoord2f(0, 2.0f);    glVertex3dv(vertexs[5]);
-    glTexCoord2f(2.0f, 2.0f); glVertex3dv(vertexs[7]);
-
-    VEC(v1, vertexs[3], vertexs[2]);
-    VEC(v2, vertexs[5], vertexs[3]);
-    CROSS(normal, v1, v2);
-    NORMALIZE(normal);
-    glNormal3dv(normal);
-
+      glBindTexture(GL_TEXTURE_2D, m_wallTexture);
+      //glMaterialfv(GL_FRONT, GL_DIFFUSE, wallMaterial);
+      MAZE_WALLFACE(4, 5, 7, 6); // Back
+      MAZE_WALLFACE(7, 5, 2, 1); // Bottom
+      MAZE_WALLFACE(6, 7, 1, 0); // Left
+      MAZE_WALLFACE(3, 2, 5, 4); // Right
+      MAZE_WALLFACE(6, 0, 3, 4); // Top
+      MAZE_WALLFACE(0, 1, 2, 3); // Front
     glEnd();
 }
 
@@ -190,30 +121,27 @@ void Maze::draw()
     glBegin(GL_QUADS);
       // Chão
       glTexCoord2f(0, 0);
-      glVertex3f(groundStart, 0, groundStart);
+      glVertex3f(groundHeight, 0, groundWidth);
       glTexCoord2f(4.0f, 0);
       glVertex3f(groundHeight, 0, groundStart);
       glTexCoord2f(0, 4.0f);
-      glVertex3f(groundHeight, 0, groundWidth);
+      glVertex3f(groundStart, 0, groundStart);
       glTexCoord2f(4.0f, 4.0f);
       glVertex3f(groundStart, 0, groundWidth);
 
-      p1[0] = groundStart;
+      p1[0] = groundHeight;
       p1[1] = 0;
-      p1[2] = groundStart;
-
-      p2[0] = groundStart;
-      p2[1] = 0;
-      p2[2] = groundWidth;
-
-      VEC(v1, p1, p2);
-
-      DUMP_COORDS_3v("p1", p1);
-      DUMP_COORDS_3v("p2", p2);
+      p1[2] = groundWidth;
 
       p2[0] = groundHeight;
       p2[1] = 0;
-      p2[2] = groundWidth;
+      p2[2] = groundStart;
+
+      VEC(v1, p1, p2);
+
+      p2[0] = groundWidth;
+      p2[1] = 0;
+      p2[2] = groundStart;
 
       VEC(v2, p2, p1);
 

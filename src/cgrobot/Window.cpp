@@ -43,13 +43,12 @@ void Window::start()
     glutPassiveMotionFunc(m_PassiveMotionFunc);
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
-    float vAmbientLightBright[4] = {.3f, .3f, .3f, 1.f};
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, vAmbientLightBright);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_CULL_FACE);
 	glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_LIGHTING);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthFunc(GL_LESS);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glutMainLoop();
