@@ -7,6 +7,9 @@ WorldObject::WorldObject()
      , rotX(0), rotY(0), rotZ(0)
 { }
 
+inline void WorldObject::setPosition(GLdouble x, GLdouble y, GLdouble z)
+{ posX = x, posY = y, posZ = z; }
+
 void WorldObject::draw()
 {
     glTranslatef(posX, posY, posZ);

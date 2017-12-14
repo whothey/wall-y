@@ -6,6 +6,7 @@
 #include "cgrobot/Robot.hpp"
 #include "cgrobot/Plant.hpp"
 #include "cgrobot/Lighter.hpp"
+#include "cgrobot/Light.hpp"
 #include "cgrobot/WindowGlass.hpp"
 #include "cgrobot/Window.hpp"
 
@@ -70,6 +71,11 @@ cgrobot::Plant plant(0, 0, 10);
 cgrobot::Lighter lighter(5, 0, 5);
 cgrobot::WindowGlass windowglass(5, 0, 5);
 
+cgrobot::Light
+    robotLight(GL_LIGHT0),
+    mazeLight(GL_LIGHT1);
+    //cameraLight(GL_LIGHT2);
+
 GLdouble rotAngle = 0, deltaAngle = 0;
 GLint xOrigin = -1;
 
@@ -90,8 +96,10 @@ void draw(void)
     current_camera->activate();
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
-    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    //glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
+    robotLight.draw();
+    mazeLight.draw();
     robot.draw();
     lighter.draw();
     plant.draw();
@@ -131,6 +139,13 @@ void update(int)
 
     windowglass.posX = maze.indexX(12, 14);
     windowglass.posZ = maze.indexZ(12, 14);
+
+    robotLight.spotCutoff = 30.0;
+    robotLight.spotExponent = 1;
+    robotLight.setSpecular(1, 1, 1, .3);
+    robotLight.setDiffuse(1, 1, 1, .8);
+    robotLight.setDirection(0, -1, 0);
+    robotLight.setPosition(robot.posX, 40, robot.posZ);
 
     robot.update();
     maze.update();
@@ -428,6 +443,34 @@ void mouse_motion(int x, int y)
     }
 }
 
+void init()
+{
+    size_t
+        mazeMidRow = maze.getRows(),
+        mazeMidCol = maze.getCols();
+
+    GLdouble
+        mazeMiddleX = maze.indexX(mazeMidRow, mazeMidCol),
+        mazeMiddleZ = maze.indexZ(mazeMidRow, mazeMidCol);
+
+    robot_camera.lookAt(0, 0, 0);
+    robot_camera.type = cgrobot::CameraType::ThirdPerson;
+    robot_camera.up(0, 1, 0);
+    robot_camera.posX = robot.posX;
+    robot_camera.posY = robot.posY + 10;
+    robot_camera.posZ = robot.posZ - 10;
+    robot_camera.yaw = 90;
+    robot_camera.pitch = 0;
+
+    mazeLight.setPosition(mazeMiddleX / 2, 30, mazeMiddleZ /2 );
+    mazeLight.setDirection(0, -1, 0);
+    mazeLight.spotCutoff = 45;
+    mazeLight.spotExponent = 1;
+
+    maze_camera.lookAt(0, 0, 0);
+    maze_camera.up(0, 0, 1);
+}
+
 // Programa Principal
 int main(int argc, char **argv)
 {
@@ -451,22 +494,12 @@ int main(int argc, char **argv)
 
     glutTimerFunc(1000 / FPS, update, 0);
 
-    //robot_camera.lookAt(&robot);
-    robot_camera.lookAt(0, 0, 0);
-    robot_camera.type = cgrobot::CameraType::ThirdPerson;
-    robot_camera.up(0, 1, 0);
-    robot_camera.posX = robot.posX;
-    robot_camera.posY = robot.posY + 10;
-    robot_camera.posZ = robot.posZ - 10;
-    robot_camera.follow(&robot);
-
-    maze_camera.lookAt(0, 0, 0);
-    maze_camera.up(0, 0, 1);
-
     maze.setAscpect(20);
+
     window.init();
     buildMenu();
     maze.init();
+    init();
     window.start();
 
     return 0;

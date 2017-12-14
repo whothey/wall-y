@@ -588,21 +588,6 @@ void Robot::draw()
       WorldObject::draw();
       glTranslatef(0, 2.5, 0);
 
-      glEnable(GL_LIGHTING);
-
-      glPushMatrix();
-
-      glEnable(GL_LIGHT0);
-      GLfloat eyePosition[3] = { 0, 40, 0 };
-
-      glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 20.0);// set cutoff angle
-      glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 1); // set focusing strength
-      glLightfv(GL_LIGHT0, GL_DIFFUSE, eyeDiffuseLight);
-      glLightfv(GL_LIGHT0, GL_POSITION, eyePosition);
-      glLightfv(GL_LIGHT0, GL_SPECULAR, eyeSpecularLight);
-      glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, eyeLightDirection); 
-      glPopMatrix();
-
       glPushMatrix();
         drawBody();
         drawArms();

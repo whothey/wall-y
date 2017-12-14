@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cmath>
 
+#define DUMP_COORDS_3v(prefix, v) (std::cout << prefix <<  ": (" << v[0] << ", " << v[1] << ", " << v[2] << ")" << std::endl)
+
 #define VEC(v, v1, v2) \
     (v)[0] = (v1)[0] - (v2)[0]; \
     (v)[1] = (v1)[1] - (v2)[1]; \
@@ -24,7 +26,5 @@
     v[2] = v[2] / NORM(v);
 
 #define DEG_TO_RAD(deg) ((deg) * M_PI / 180)
-
-#define DUMP_COORDS_3v(prefix, v) (std::cout << prefix <<  ": (" << v[0] << ", " << v[1] << ", " << v[2] << ")" << std::endl)
 
 #endif

@@ -16,6 +16,8 @@ Maze::Maze(GLint *adjMatrix, size_t nrows, size_t ncols)
 Maze::~Maze()
 {
     gluDeleteQuadric(wallQuadric);
+    glDeleteTextures(1, &m_groundTexture);
+    glDeleteTextures(1, &m_wallTexture);
 }
 
 GLint Maze::index(size_t i, size_t j) {
@@ -73,7 +75,6 @@ void Maze::drawWall()
 {
     GLdouble size        = m_cubeAspect / 2;
     GLdouble center[3]   = { size / 2, size / 2, 0 };
-    //GLfloat  wallMaterial[4] = { .8, .8, .8, 0.5 };
 
     glColor3f(0, 1, 0);
 
@@ -91,9 +92,9 @@ void Maze::drawWall()
     // Usados na macro MAZE_WALLFACE
     GLdouble v1[3], v2[3], normal[3];
 
+    glBindTexture(GL_TEXTURE_2D, m_wallTexture);
+
     glBegin(GL_QUADS);
-      glBindTexture(GL_TEXTURE_2D, m_wallTexture);
-      //glMaterialfv(GL_FRONT, GL_DIFFUSE, wallMaterial);
       MAZE_WALLFACE(4, 5, 7, 6); // Back
       MAZE_WALLFACE(7, 5, 2, 1); // Bottom
       MAZE_WALLFACE(6, 7, 1, 0); // Left
@@ -103,63 +104,54 @@ void Maze::drawWall()
     glEnd();
 }
 
-void Maze::draw()
+void Maze::drawGround()
 {
-    size_t i, j;
-    GLfloat
-        groundStart  = -m_cubeAspect / 2,
-        groundWidth  = m_matrixCols * m_cubeAspect,
-        groundHeight = m_matrixRows * m_cubeAspect;
-
-    GLdouble v1[3], v2[3], p1[3], p2[3], normal[3];
-
-    glPushMatrix();
+    GLdouble groundNormal[3] = { 0, 1, 0 };
+    GLdouble starts = -m_cubeAspect / 4;
 
     glColor3f(213/255.0f, 208/255.0f, 178/255.0f);
 
-    glBindTexture(GL_TEXTURE_2D, m_groundTexture);
-    glBegin(GL_QUADS);
-      // Chão
-      glTexCoord2f(0, 0);
-      glVertex3f(groundHeight, 0, groundWidth);
-      glTexCoord2f(4.0f, 0);
-      glVertex3f(groundHeight, 0, groundStart);
-      glTexCoord2f(0, 4.0f);
-      glVertex3f(groundStart, 0, groundStart);
-      glTexCoord2f(4.0f, 4.0f);
-      glVertex3f(groundStart, 0, groundWidth);
+    glPushMatrix();
+        glTranslatef(starts, 0, starts * 2);
 
-      p1[0] = groundHeight;
-      p1[1] = 0;
-      p1[2] = groundWidth;
+        glBindTexture(GL_TEXTURE_2D, m_groundTexture);
 
-      p2[0] = groundHeight;
-      p2[1] = 0;
-      p2[2] = groundStart;
+        glBegin(GL_QUADS);
+          glNormal3dv(groundNormal);
+          glTexCoord2f(0, 0);
+          glVertex3f(m_cubeAspect, 0, m_cubeAspect);
+          glTexCoord2f(1, 0);
+          glVertex3f(m_cubeAspect, 0, 0);
+          glTexCoord2f(0, 1);
+          glVertex3f(0, 0, 0);
+          glTexCoord2f(1, 1);
+          glVertex3f(0, 0, m_cubeAspect);
+        glEnd();
+    glPopMatrix();
 
-      VEC(v1, p1, p2);
+}
 
-      p2[0] = groundWidth;
-      p2[1] = 0;
-      p2[2] = groundStart;
+size_t Maze::getRows()
+{
+    return m_matrixRows;
+}
 
-      VEC(v2, p2, p1);
+size_t Maze::getCols()
+{
+    return m_matrixCols;
+}
 
-      CROSS(normal, v1, v2);
-      NORMALIZE(normal);
-      glNormal3dv(normal);
-    glEnd();
+void Maze::draw()
+{
+    size_t i, j;
 
-    glColor3f(0, 1, 0);
-
-    //glBindTexture(GL_TEXTURE_2D, m_wallTexture);
-
-    glTranslatef(-0.5, m_cubeAspect / 4, 0);
+    glPushMatrix();
 
     for (i = 0; i < m_matrixRows; i++) {
         glPushMatrix();
         for (j = 0; j < m_matrixCols; j++) {
             if (index(i, j) == 1) drawWall();
+            drawGround();
             glTranslatef(0, 0, m_cubeAspect);
         }
         glPopMatrix();

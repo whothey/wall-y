@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 #include <cmath>
 #include "../bmp.hpp"
+#include "../helpers.c"
 
 #define MAX_TEXTURES 5
 #define TEXTURE "../textures/"
@@ -16,13 +17,14 @@ protected:
 
 public:
     GLdouble
-        posX, posY, posZ,
+        posX = 0, posY = 0, posZ = 0,
         rotX, rotY, rotZ;
 
     WorldObject();
     virtual void draw();
     virtual void init() = 0;
     virtual void update() = 0;
+    virtual void setPosition(GLdouble x, GLdouble y, GLdouble z);
     virtual void move(GLdouble x, GLdouble y, GLdouble z);
     virtual void turn(GLdouble x, GLdouble y, GLdouble z);
     virtual void turnX(GLdouble dg);
