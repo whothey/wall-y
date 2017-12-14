@@ -104,6 +104,17 @@ void draw(void)
     lighter.draw();
     plant.draw();
     maze.draw();
+
+    glPushMatrix();
+      glTranslatef(maze.indexX(12, 14), 5, maze.indexZ(12, 14) + 20);
+
+      glColor4f(1, 1, 1, 1);
+      glutSolidTeapot(3);
+
+      glColor4f(0, 0, 1, .8);
+      glutSolidTorus(4, 8, 20, 20);
+    glPopMatrix();
+
     windowglass.draw();
 
     // Executa os comandos OpenGL
