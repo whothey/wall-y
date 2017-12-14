@@ -297,7 +297,7 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot) {
                 robot.turnY(5);
             } else {
-                current_camera->move(1, 0, 0);
+                current_camera->moveSide(-1);
             }
 
             break;
@@ -319,7 +319,7 @@ void keyboard(unsigned char key, int x, int y)
             if (control == Robot) {
                 robot.turnY(-5);
             } else {
-                current_camera->move(-1, 0, 0);
+                current_camera->moveSide(1);
             }
             break;
 

@@ -27,4 +27,9 @@
 
 #define DEG_TO_RAD(deg) ((deg) * M_PI / 180)
 
+#define VECTORIZE(v, x, y, z) \
+    v[0] = x; \
+    v[1] = y; \
+    v[2] = z;
+
 #endif

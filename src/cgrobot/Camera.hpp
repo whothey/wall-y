@@ -22,7 +22,7 @@ class Camera : public WorldObject
 
 public:
     GLdouble offsetX, offsetY, offsetZ;
-    GLdouble pitch, yaw, roll, frontX, frontY, frontZ;
+    GLdouble pitch, yaw, roll, frontX, frontY, frontZ, sideX, sideY, sideZ;
 
     CameraType type = Locked;
 
@@ -45,8 +45,9 @@ public:
     void turnH(GLdouble dg);
     void turnV(GLdouble dg);
 
-    void calcFront();
+    void calcDirections();
     void moveForward(GLdouble);
+    void moveSide(GLdouble);
 
     void init();
     void draw();

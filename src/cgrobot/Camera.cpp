@@ -74,9 +74,9 @@ void Camera::turnOffset(GLdouble dg)
     std::cout << "Rotation " << rotY << " and offset: " << offsetX << std::endl;
 }
 
-void Camera::calcFront()
+void Camera::calcDirections()
 {
-    GLdouble norm;
+    GLdouble norm, front[3], up[3], side[3];
 
     frontX = cos(DEG_TO_RAD(yaw)) * cos(DEG_TO_RAD(pitch)),
     frontY = sin(DEG_TO_RAD(pitch)),
@@ -87,6 +87,16 @@ void Camera::calcFront()
     frontX /= norm;
     frontY /= norm;
     frontZ /= norm;
+
+    VECTORIZE(front, frontX, frontY, frontZ);
+    VECTORIZE(up, m_upX, m_upY, m_upZ);
+
+    CROSS(side, front, up);
+    NORMALIZE(side);
+
+    sideX = side[0];
+    sideY = side[1];
+    sideZ = side[2];
 }
 
 void Camera::up(GLdouble x, GLdouble y, GLdouble z)
@@ -117,10 +127,17 @@ void Camera::moveForward(GLdouble distance)
     posZ += frontZ * distance;
 }
 
+void Camera::moveSide(GLdouble distance)
+{
+    posX += sideX * distance;
+    posY += sideY * distance;
+    posZ += sideZ * distance;
+}
+
 void Camera::activate()
 {
     if (type == ThirdPerson) {
-        calcFront();
+        calcDirections();
 
         gluLookAt(
             posX, posY, posZ,
